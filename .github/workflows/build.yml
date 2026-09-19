@@ -14,7 +14,13 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
       - name: Build APK
         run: |
-          cd Masrofy_Android_v*
+          ls -la
+          if [ -f Masrofy_Android_v*.zip ]; then
+            unzip -o Masrofy_Android_v*.zip
+          fi
+          DIR=$(find. -maxdepth 1 -type d -name "Masrofy_Android_v*" | head -n 1)
+          echo "Found dir: $DIR"
+          cd "$DIR"
           chmod +x gradlew
           ./gradlew assembleDebug
           
