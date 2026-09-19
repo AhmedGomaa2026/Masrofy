@@ -1,0 +1,33 @@
+name: Build Masrofy Android
+
+on:
+  push:
+    branches: [ "رئيسي", "main" ]
+  pull_request:
+    branches: [ "رئيسي", "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: سحب الكود
+        uses: actions/checkout@v4
+
+      - name: تجهيز Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: تجهيز Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: بناء تطبيق ماسروفي
+        working-directory: ./Masrofy_Android_v...
+        run: |
+          chmod +x gradlew
+          ./gradlew build
+
+      - name: بناء APK
+        working-directory: ./Masrofy_Android_v...
+        run: ./gradlew assembleDebug
