@@ -1,30 +1,33 @@
-name: Build Masrofy Android
-on: [push]
+name: Build Masrofy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Java 17
+      - name: تحميل المشروع
+        uses: actions/checkout@v4
+
+      - name: تجهيز Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: '17'
-      - name: Setup Gradle
+
+      - name: تجهيز Gradle
         uses: gradle/actions/setup-gradle@v4
-      - name: Build APK
-        run: |
-          ls -la
-          if ls Masrofy_Android_v*.zip 1> /dev/null 2>&1; then
-            unzip -o Masrofy_Android_v*.zip
-          fi
-          DIR=$(find. -maxdepth 1 -type d -name "Masrofy_Android_v*" | head -n 1)
-          echo "Found dir: $DIR"
-          cd "$DIR"
-          chmod +x gradlew
-          ./gradlew assembleDebug
-      - name: Upload APK
+
+      - name: بناء التطبيق
+        run: ./gradlew assembleDebug
+
+      - name: حفظ ملف APK
         uses: actions/upload-artifact@v4
         with:
           name: Masrofy-APK
-          path: "**/app/build/outputs/apk/debug/*.apk"
+          path: app/build/outputs/apk/debug/*.apk
