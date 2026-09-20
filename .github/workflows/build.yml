@@ -29,3 +29,4 @@ jobs:
         with:
           name: Masrofy-APK
           path: Masrofy_Android/app/build/outputs/apk/debug/app-debug.apk
+          
