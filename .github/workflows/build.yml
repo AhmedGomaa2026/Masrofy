@@ -1,20 +1,20 @@
-name: Build Masrofy Android
+name: Build Masrofy
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout project
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Java 17
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -22,35 +22,14 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
 
-      - name: Find Android project
-        run: |
-          echo "Searching for Gradle project..."
-
-          PROJECT_DIR=$(find . -name gradlew -type f | head -n 1 | xargs -r dirname)
-
-          if [ -z "$PROJECT_DIR" ]; then
-            echo "ERROR: gradlew not found"
-            exit 1
-          fi
-
-          echo "Project found at: $PROJECT_DIR"
-
-          echo "$PROJECT_DIR" > project_dir.txt
-
-      - name: Build Debug APK
-        run: |
-          PROJECT_DIR=$(cat project_dir.txt)
-
-          cd "$PROJECT_DIR"
-
-          chmod +x gradlew
-
-          ./gradlew assembleDebug --stacktrace
+      - name: Build APK
+        run: gradle assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Masrofy-APK
-          path: "**/app/build/outputs/apk/debug/*.apk"
-          if-no-files-found: error
+          name: Masrofy-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
